@@ -1283,18 +1283,10 @@
       <nav class="navbar">
         <a href="#home" class="logo-container">
           <img
-            src="assets/logo.png"
-            alt="प्रमोद प्रिंटर्स - जनरल शॉप"
-            class="logo-img"
+            src="assets/logo2.png"
+            alt="प्रमोद प्रिंटर्स & जनरल शॉप"
+            class="site-logo"
           />
-
-          <a href="#home" class="logo-container">
-            <img
-              src="assets/logo2.png"
-              alt="प्रमोद प्रिंटर्स & जनरल शॉप"
-              class="site-logo"
-            />
-          </a>
         </a>
         <div class="menu-toggle" onclick="toggleMenu()">
           <i class="fas fa-bars"></i>
@@ -1555,15 +1547,20 @@
 
       <div class="gallery-filters">
         <button class="filter-btn active" data-filter="all">सभी</button>
-        <button class="filter-btn" data-filter="shadi">शादी कार्ड</button>
-        <button class="filter-btn" data-filter="bhagwat">भागवत</button>
-        <button class="filter-btn" data-filter="birthday">जन्मदिन</button>
-        <button class="filter-btn" data-filter="griha">गृह प्रवेश</button>
-        <button class="filter-btn" data-filter="other">अन्य</button>
+
+        <button class="filter-btn" data-filter="शादी कार्ड">शादी कार्ड</button>
+
+        <button class="filter-btn" data-filter="भागवत">भागवत</button>
+
+        <button class="filter-btn" data-filter="जन्मदिन">जन्मदिन</button>
+
+        <button class="filter-btn" data-filter="गृह प्रवेश">गृह प्रवेश</button>
+
+        <button class="filter-btn" data-filter="अन्य">अन्य</button>
       </div>
 
       <div class="gallery-grid modern-gallery" id="invitationGallery">
-        <article class="gallery-card" data-category="shadi">
+        <article class="gallery-card" data-category="शादी कार्ड">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1584,7 +1581,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="shadi">
+        <article class="gallery-card" data-category="शादी कार्ड">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1605,7 +1602,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="shadi">
+        <article class="gallery-card" data-category="शादी कार्ड">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1626,7 +1623,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="bhagwat">
+        <article class="gallery-card" data-category="भागवत">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1647,7 +1644,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="birthday">
+        <article class="gallery-card" data-category="जन्मदिन">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1656,7 +1653,7 @@
           />
           <div class="gallery-card-body">
             <span>जन्मदिन</span>
-            <h3>Birthday Invitation</h3>
+            <h3>जन्मदिन Invitation</h3>
             <a
               class="card-whatsapp-link"
               target="_blank"
@@ -1668,7 +1665,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="griha">
+        <article class="gallery-card" data-category="गृह प्रवेश">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1689,7 +1686,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="other">
+        <article class="gallery-card" data-category="अन्य">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1710,7 +1707,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="other">
+        <article class="gallery-card" data-category="अन्य">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1731,7 +1728,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="shadi">
+        <article class="gallery-card" data-category="शादी कार्ड">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1752,7 +1749,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="other">
+        <article class="gallery-card" data-category="अन्य">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1773,7 +1770,7 @@
           </div>
         </article>
 
-        <article class="gallery-card" data-category="other">
+        <article class="gallery-card" data-category="अन्य">
           <img
             class="gallery-preview-img"
             loading="lazy"
@@ -1793,12 +1790,6 @@
             >
           </div>
         </article>
-      </div>
-
-      <div class="unsplash-note">
-        <i class="fas fa-images"></i>
-        Gallery में demo/reference images Unsplash से ऑनलाइन लोड हो रही हैं।
-        इन्हें बाद में आपकी अपनी card designs से आसानी से बदला जा सकता है।
       </div>
     </section>
 
@@ -2425,25 +2416,61 @@
         restartTimer();
       })();
 
-      // Gallery Filter Logic
+      /* ===============================
+   Gallery Filter Logic
+================================ */
+
       (() => {
-        const items = document.querySelectorAll(".gallery-card");
+        let selectedCategory = "all";
+
         const buttons = document.querySelectorAll(".filter-btn");
+
+        function getGalleryItems() {
+          return document.querySelectorAll(".gallery-card");
+        }
+
+        function normalizeCategory(category) {
+          const oldCategoryMap = {
+            wedding: "शादी कार्ड",
+            birthday: "जन्मदिन",
+            housewarming: "गृह प्रवेश",
+            other: "अन्य",
+          };
+
+          const value = String(category || "").trim();
+
+          return oldCategoryMap[value] || value;
+        }
+
+        function applyGalleryFilter() {
+          const items = getGalleryItems();
+
+          items.forEach((item) => {
+            const itemCategory = normalizeCategory(item.dataset.category || "");
+
+            const shouldShow =
+              selectedCategory === "all" || itemCategory === selectedCategory;
+
+            item.style.display = shouldShow ? "" : "none";
+          });
+        }
 
         buttons.forEach((button) => {
           button.addEventListener("click", () => {
-            const category = button.dataset.filter;
-            buttons.forEach((btn) => btn.classList.remove("active"));
+            selectedCategory = button.dataset.filter || "all";
+
+            buttons.forEach((btn) => {
+              btn.classList.remove("active");
+            });
+
             button.classList.add("active");
 
-            items.forEach((item) => {
-              item.style.display =
-                category === "all" || item.dataset.category === category
-                  ? ""
-                  : "none";
-            });
+            applyGalleryFilter();
           });
         });
+
+        // Dynamic gallery render होने के बाद भी filter apply होगा
+        window.applyGalleryFilter = applyGalleryFilter;
       })();
 
       // Safe WhatsApp Link Generator for Card Enquiries
@@ -2588,5 +2615,64 @@
       </button>
       <img id="galleryLightboxImage" src alt="Image Preview" />
     </div>
+
+    <!-- SUPABASE DATABASE CONNECTION -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        const config = window.SUPABASE_CONFIG || {};
+        if (
+          !config.url ||
+          !config.anonKey ||
+          config.url.includes("YOUR_") ||
+          config.anonKey.includes("YOUR_")
+        )
+          return;
+        try {
+          const client = window.supabase.createClient(
+            config.url,
+            config.anonKey,
+          );
+          const { data, error } = await client
+            .from("designs")
+            .select("*")
+            .eq("is_published", true)
+            .order("created_at", { ascending: false });
+          if (error || !data || !data.length) return;
+          const gallery = document.getElementById("invitationGallery");
+          if (!gallery) return;
+          gallery.innerHTML = data
+            .map(function (design) {
+              return `<article class="gallery-card" data-category="${design.category || "अन्य"}">
+              <img class="gallery-preview-img" loading="lazy" src="${design.image_url}" alt="${design.title}">
+              <div class="gallery-card-body">
+                <span>${design.category || "अन्य"}</span>
+                <h3>${design.title}</h3>
+                <a class="card-whatsapp-link" target="_blank" href="https://wa.me/919589445441?text=${encodeURIComponent("नमस्ते प्रमोद प्रिंटर्स,\n\nमुझे इस डिजाइन के बारे में जानकारी चाहिए।\n\nडिजाइन: " + design.title + "\nवेबसाइट: " + location.href)}">WhatsApp पर पूछें</a>
+              </div>
+            </article>`;
+            })
+            .join("");
+          gallery
+            .querySelectorAll(".gallery-preview-img")
+            .forEach(function (image) {
+              image.addEventListener("click", function () {
+                const box = document.getElementById("galleryLightbox");
+                const boxImage = document.getElementById(
+                  "galleryLightboxImage",
+                );
+                if (!box || !boxImage) return;
+                boxImage.src = image.currentSrc || image.src;
+                box.classList.add("active");
+                box.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+              });
+            });
+        } catch (e) {
+          console.error("Database gallery error:", e);
+        }
+      });
+    </script>
   </body>
 </html>

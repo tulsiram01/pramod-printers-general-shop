@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard | प्रमोद प्रिंटर्स</title>
+<link rel="stylesheet" href="admin.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+<div class="login-shell" id="loginPanel">
+  <div class="login-card">
+    <div class="brand-mark">प</div>
+    <p class="eyebrow">PRAMOD PRINTERS</p>
+    <h1>Admin Dashboard</h1>
+    <p class="muted">अपने designs को आसानी से manage करें</p>
+    <div id="loginMsg"></div>
+    <form id="loginForm">
+      <label>Email<input id="loginEmail" type="email" placeholder="admin@example.com" required></label>
+      <label>Password<input id="loginPassword" type="password" placeholder="••••••••" required></label>
+      <button class="btn btn-primary btn-full" type="submit">Login करें <span>→</span></button>
+    </form>
+  </div>
+</div>
+
+<div id="appPanel" class="app hidden">
+  <aside class="sidebar">
+    <div class="side-brand"><div class="brand-mark small">प</div><div><strong>प्रमोद प्रिंटर्स</strong><small>Admin Panel</small></div></div>
+    <nav><a class="active" href="#dashboard">▦ <span>Dashboard</span></a><a href="#designForm">＋ <span>नया Design</span></a><a href="index.html" target="_blank">↗ <span>Website देखें</span></a></nav>
+    <button id="logoutBtn" class="logout">⇥ Logout</button>
+  </aside>
+  <main class="main">
+    <header class="mobile-header"><button id="menuBtn">☰</button><strong>प्रमोद प्रिंटर्स</strong><button id="mobileLogout">⇥</button></header>
+    <div class="page-head" id="dashboard"><div><p class="eyebrow">WELCOME BACK</p><h1>Dashboard</h1><p class="muted">आपके सभी designs यहाँ manage होंगे।</p></div><button class="btn btn-primary" id="newDesignBtn">＋ नया Design</button></div>
+    <div class="stats"><div class="stat-card"><span class="stat-icon purple">▦</span><div><small>Total Designs</small><strong id="totalCount">0</strong></div></div><div class="stat-card"><span class="stat-icon green">✓</span><div><small>Published</small><strong id="publishedCount">0</strong></div></div><div class="stat-card"><span class="stat-icon orange">◷</span><div><small>Hidden</small><strong id="hiddenCount">0</strong></div></div></div>
+    <section class="panel" id="formPanel"><div class="panel-head"><div><h2 id="formTitle">नया Design जोड़ें</h2><p class="muted">Google Drive image link डालकर design publish करें।</p></div><button class="icon-btn" id="cancelBtn" type="button">×</button></div><div id="appMsg"></div>
+      <form id="designForm"><input id="designId" type="hidden"><div class="form-grid"><label>Design Title<input id="title" required placeholder="शादी निमंत्रण कार्ड"></label><label>Category<select id="category"><option value="shadi">शादी कार्ड</option><option value="bhagwat">भागवत</option><option value="birthday">जन्मदिन</option><option value="griha">गृह प्रवेश</option><option value="other">अन्य</option></select></label></div>
+      <label>Google Drive Image URL<input id="imageUrl" type="url" required placeholder="https://drive.google.com/file/d/FILE_ID/view"><small>Drive file में Share → General access → Anyone with the link → Viewer करें।</small></label>
+      <div class="url-preview"><img id="imagePreview" src="" alt="Preview"><div id="previewPlaceholder">Image URL डालने पर preview यहाँ दिखाई देगा</div></div>
+      <label>Description<textarea id="description" placeholder="Design के बारे में छोटा विवरण..."></textarea></label><label class="check-row"><input id="published" type="checkbox" checked><span>Website पर प्रकाशित करें</span></label>
+      <div class="form-actions"><button class="btn btn-primary" id="saveBtn" type="submit">Design Save करें</button><button class="btn btn-light" id="resetBtn" type="button">Reset</button></div></form>
+    </section>
+    <section class="panel"><div class="panel-head"><div><h2>सभी Designs</h2><p class="muted">Upload किए गए designs की सूची</p></div><input class="search" id="searchInput" placeholder="⌕  Design खोजें..."></div><div class="table-wrap"><table><thead><tr><th>Preview</th><th>Design</th><th>Category</th><th>Status</th><th>Action</th></tr></thead><tbody id="designRows"></tbody></table></div></section>
+  </main>
+</div>
+<script src="admin.js"></script>
+</body>
+</html>
