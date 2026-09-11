@@ -9,6 +9,3 @@
 6. WhatsApp enquiry buttons.
 7. Existing online-form, AEPS, contact और बाकी sections सुरक्षित रखे गए हैं.
 
-चलाने के लिए index.html को browser में खोलें.
-Internet connection gallery/third-party Unsplash images के लिए आवश्यक है.
-बाद में gallery images को आपकी अपनी card designs से replace किया जा सकता है.
