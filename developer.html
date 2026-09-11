@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer Profile | Mr. Tulsiram Chandravanshi</title>
+  <link rel="icon" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#172033;line-height:1.6}
+    a{text-decoration:none;color:inherit}
+    .container{width:min(1120px,92%);margin:auto}
+    header{background:linear-gradient(135deg,#172554,#2563eb);color:#fff;padding:70px 0 110px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:55px}
+    .brand{font-size:22px;font-weight:800}.back{border:1px solid #ffffff66;padding:10px 18px;border-radius:30px}
+    .hero{display:grid;grid-template-columns:180px 1fr;gap:35px;align-items:center}
+    .profile-img{width:180px;height:180px;border-radius:50%;object-fit:cover;border:6px solid #fff;box-shadow:0 12px 35px #0003}
+    .hero h1{font-size:clamp(30px,5vw,52px);margin-bottom:10px}
+    .hero p{font-size:18px;color:#dbeafe;max-width:650px}
+    .tag{display:inline-block;margin-top:18px;background:#ffffff1c;border:1px solid #ffffff40;padding:8px 15px;border-radius:30px}
+    main{margin-top:-55px;padding-bottom:50px}
+    .card{background:#fff;border-radius:20px;padding:30px;box-shadow:0 12px 35px #17203312;margin-bottom:25px}
+    .section-title{font-size:27px;margin-bottom:20px;color:#172554}
+    .about{display:grid;grid-template-columns:1.4fr 1fr;gap:30px}
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+    .stat{background:#eff6ff;padding:20px;border-radius:14px;text-align:center}
+    .stat strong{display:block;font-size:28px;color:#2563eb}.stat span{font-size:13px;color:#64748b}
+    .skills{display:flex;flex-wrap:wrap;gap:10px}.skill{background:#eef2ff;color:#3730a3;padding:9px 14px;border-radius:25px;font-size:14px;font-weight:600}
+    .projects{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+    .project{border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;background:#fff;transition:.25s}
+    .project:hover{transform:translateY(-5px);box-shadow:0 12px 25px #17203318}
+    .project img{width:100%;height:180px;object-fit:cover;display:block}
+    .project-content{padding:20px}.project h3{margin-bottom:8px;color:#172554}.project p{font-size:14px;color:#64748b}
+    .project .tech{margin-top:14px;color:#2563eb;font-size:13px;font-weight:700}
+    .contact{display:flex;flex-wrap:wrap;gap:12px}.contact a{background:#172554;color:#fff;padding:12px 18px;border-radius:10px;font-size:14px}
+    footer{text-align:center;padding:25px;background:#111827;color:#cbd5e1;font-size:14px}
+    @media(max-width:800px){.about{grid-template-columns:1fr}.projects{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){header{padding:35px 0 90px}.topbar{margin-bottom:35px}.hero{grid-template-columns:1fr;text-align:center}.profile-img{margin:auto}.hero p{font-size:15px}.projects{grid-template-columns:1fr}.card{padding:22px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand"><i class="fa-solid fa-code"></i> Developer Portfolio</div>
+      <a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Website</a>
+    </div>
+    <div class="hero">
+      <img class="profile-img" src="assets/profile.png" alt="Mr. Tulsiram Chandravanshi">
+      <div>
+        <h1>Mr. Tulsiram Chandravanshi</h1>
+        <p>Web Developer &amp; UI Designer specializing in responsive websites, modern user interfaces, and practical digital solutions.</p>
+        <span class="tag"><i class="fa-solid fa-briefcase"></i> 3+ Years of Experience</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <section class="card about">
+      <div>
+        <h2 class="section-title">About Me</h2>
+        <p>I am Mr. Tulsiram Chandravanshi, a passionate web developer focused on creating clean, responsive, and user-friendly websites. I enjoy converting ideas into functional digital experiences using modern web technologies.</p>
+        <br>
+        <div class="skills">
+          <span class="skill">HTML5</span><span class="skill">CSS3</span><span class="skill">JavaScript</span>
+          <span class="skill">Responsive Design</span><span class="skill">UI/UX</span><span class="skill">Supabase</span>
+          <span class="skill">GitHub</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong>3+</strong><span>Years Experience</span></div>
+        <div class="stat"><strong>12+</strong><span>Projects Completed</span></div>
+        <div class="stat"><strong>8+</strong><span>Technologies</span></div>
+        <div class="stat"><strong>100%</strong><span>Client Focus</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Dummy Project Gallery</h2>
+      <div class="projects">
+        <article class="project">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=85" alt="Business dashboard project">
+          <div class="project-content">
+            <h3>Business Dashboard</h3>
+            <p>A modern analytics dashboard with sales cards, charts, reports, and responsive navigation.</p>
+            <div class="tech">HTML • CSS • JavaScript</div>
+          </div>
+        </article>
+        <article class="project">
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=900&q=85" alt="E-commerce website project">
+          <div class="project-content">
+            <h3>ShopKart E-Commerce</h3>
+            <p>A dummy online shopping platform featuring product cards, categories, cart interface, and checkout UI.</p>
+            <div class="tech">HTML • CSS • JavaScript • Supabase</div>
+          </div>
+        </article>
+        <article class="project">
+          <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85" alt="Office management project">
+          <div class="project-content">
+            <h3>Office Management System</h3>
+            <p>A responsive office management concept for employee records, tasks, attendance, and reports.</p>
+            <div class="tech">HTML • CSS • JavaScript</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Contact Me</h2>
+      <div class="contact">
+        <a href="mailto:your-email@example.com"><i class="fa-solid fa-envelope"></i> Email</a>
+        <a href="https://github.com/" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
+        <a href="https://www.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+        <a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
+        <a href="https://wa.me/6268757307" target="_blank"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  © 2026 Mr. Tulsiram Chandravanshi. All Rights Reserved.
+</footer>
+</body>
+</html>
