@@ -604,14 +604,61 @@ $("newDesignBtn")?.addEventListener(
   },
 );
 
-$("menuBtn")?.addEventListener(
-  "click",
-  () => {
-    document
-      .querySelector(".sidebar")
-      ?.classList.toggle("open");
-  },
-);
+/* ===============================
+   Mobile Sidebar
+================================ */
+
+const sidebar = document.querySelector(".sidebar");
+const menuBtn = $("menuBtn");
+
+function openSidebar() {
+  sidebar?.classList.add("open");
+  document.body.classList.add("sidebar-open");
+}
+
+function closeSidebar() {
+  sidebar?.classList.remove("open");
+  document.body.classList.remove("sidebar-open");
+}
+
+function toggleSidebar() {
+  if (sidebar?.classList.contains("open")) {
+    closeSidebar();
+  } else {
+    openSidebar();
+  }
+}
+
+/* Menu Button */
+menuBtn?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleSidebar();
+});
+
+/* Sidebar Links */
+sidebar?.querySelectorAll("nav a").forEach((link) => {
+  link.addEventListener("click", () => {
+    closeSidebar();
+  });
+});
+
+/* Click outside sidebar */
+document.addEventListener("click", (event) => {
+  if (
+    sidebar?.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    !menuBtn?.contains(event.target)
+  ) {
+    closeSidebar();
+  }
+});
+
+/* ESC key */
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeSidebar();
+  }
+});
 
 /* ===============================
    Admin Search & Category Filter
@@ -1393,5 +1440,17 @@ document.addEventListener(
     renderGalleryDesigns();
   },
 );
+
+function openSidebar() {
+  sidebar?.classList.add("open");
+  document.body.classList.add("sidebar-open");
+  menuBtn?.setAttribute("aria-expanded", "true");
+}
+
+function closeSidebar() {
+  sidebar?.classList.remove("open");
+  document.body.classList.remove("sidebar-open");
+  menuBtn?.setAttribute("aria-expanded", "false");
+}
 
 init();

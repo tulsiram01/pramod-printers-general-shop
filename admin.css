@@ -508,3 +508,12 @@ th {
   font-size: 13px;
   line-height: 1.6;
 }
+@media (max-width: 768px) {
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  body.sidebar-open {
+    overflow: hidden;
+  }
+}
