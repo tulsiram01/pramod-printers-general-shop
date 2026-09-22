@@ -422,13 +422,11 @@ function resetForm() {
 ================================ */
 
 function showApp() {
-  $("loginPanel")?.classList.add(
-    "hidden",
-  );
+  $("loginPanel")?.classList.add("hidden");
 
-  $("appPanel")?.classList.remove(
-    "hidden",
-  );
+  $("appPanel")?.classList.remove("hidden");
+
+  resetSessionTimer();
 
   loadDesigns();
 }
@@ -519,17 +517,35 @@ $("loginForm")?.addEventListener(
 );
 
 /* ===============================
-   Logout
+   Logout & Session Timeout
 ================================ */
 
-async function logout() {
-  if (sb) {
-    await sb.auth.signOut();
-  }
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 
-  location.reload();
+let sessionTimer = null;
+
+async function logout() {
+  try {
+    if (sb) {
+      await sb.auth.signOut();
+    }
+  } catch (error) {
+    console.error("Logout error:", error);
+  } finally {
+    clearTimeout(sessionTimer);
+    location.reload();
+  }
 }
 
+function resetSessionTimer() {
+  clearTimeout(sessionTimer);
+
+  sessionTimer = setTimeout(() => {
+    logout();
+  }, SESSION_TIMEOUT);
+}
+
+/* Manual Logout */
 $("logoutBtn")?.addEventListener(
   "click",
   logout,
@@ -539,6 +555,21 @@ $("mobileLogout")?.addEventListener(
   "click",
   logout,
 );
+
+/* User Activity */
+[
+  "click",
+  "mousemove",
+  "keydown",
+  "scroll",
+  "touchstart",
+].forEach((eventName) => {
+  document.addEventListener(
+    eventName,
+    resetSessionTimer,
+    { passive: true }
+  );
+});
 
 /* ===============================
    Form Controls
