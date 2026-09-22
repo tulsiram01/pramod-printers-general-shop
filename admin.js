@@ -197,26 +197,31 @@ const CATEGORY_DATA = {
 
 function normalizeCategory(category) {
   const value = String(category || "").trim();
-
   const lowerValue = value.toLowerCase();
 
   const categoryMap = {
+    // शादी कार्ड
     "शादी कार्ड": "शादी कार्ड",
-    wedding: "शादी कार्ड",
+    "wedding": "शादी कार्ड",
 
+    // भागवत
     "भागवत": "भागवत",
-    bhagwat: "भागवत",
+    "bhagwat": "भागवत",
     "bhagwat katha": "भागवत",
 
+    // जन्मदिन
     "जन्मदिन": "जन्मदिन",
-    birthday: "जन्मदिन",
+    "birthday": "जन्मदिन",
 
+    // गृह प्रवेश
     "गृह प्रवेश": "गृह प्रवेश",
-    housewarming: "गृह प्रवेश",
+    "griha": "गृह प्रवेश",
     "griha pravesh": "गृह प्रवेश",
+    "housewarming": "गृह प्रवेश",
 
+    // अन्य
     "अन्य": "अन्य",
-    other: "अन्य",
+    "other": "अन्य",
   };
 
   return (
