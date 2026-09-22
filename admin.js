@@ -78,7 +78,6 @@ function driveImageUrl(value) {
   let fileId = "";
   let match;
 
-  // https://drive.google.com/file/d/FILE_ID/view
   match = rawUrl.match(
     /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i,
   );
@@ -87,9 +86,6 @@ function driveImageUrl(value) {
     fileId = match[1];
   }
 
-  // https://drive.google.com/open?id=FILE_ID
-  // https://drive.google.com/uc?id=FILE_ID
-  // https://drive.google.com/thumbnail?id=FILE_ID
   if (!fileId) {
     match = rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/i);
 
@@ -98,7 +94,6 @@ function driveImageUrl(value) {
     }
   }
 
-  // /d/FILE_ID/
   if (!fileId) {
     match = rawUrl.match(/\/d\/([a-zA-Z0-9_-]+)/i);
 
@@ -107,7 +102,6 @@ function driveImageUrl(value) {
     }
   }
 
-  // Direct Google Drive File ID
   if (!fileId && /^[a-zA-Z0-9_-]{15,}$/.test(rawUrl)) {
     fileId = rawUrl;
   }
@@ -154,8 +148,6 @@ const CATEGORY_DATA = {
       "आपकी आवश्यकता के अनुसार सुंदर, आकर्षक और प्रीमियम डिजाइन।",
   },
 
-  /* पुराने English category values की compatibility */
-
   wedding: {
     title: "शुभ विवाह निमंत्रण कार्ड",
     description:
@@ -179,20 +171,65 @@ const CATEGORY_DATA = {
     description:
       "आपकी आवश्यकता के अनुसार सुंदर, आकर्षक और प्रीमियम डिजाइन।",
   },
+
+  bhagwat: {
+    title: "श्रीमद् भागवत कथा निमंत्रण कार्ड",
+    description:
+      "श्रीमद् भागवत कथा एवं धार्मिक आयोजन के लिए सुंदर और आकर्षक निमंत्रण कार्ड डिजाइन।",
+  },
+
+  "bhagwat katha": {
+    title: "श्रीमद् भागवत कथा निमंत्रण कार्ड",
+    description:
+      "श्रीमद् भागवत कथा एवं धार्मिक आयोजन के लिए सुंदर और आकर्षक निमंत्रण कार्ड डिजाइन।",
+  },
+
+  "griha pravesh": {
+    title: "गृह प्रवेश निमंत्रण कार्ड",
+    description:
+      "गृह प्रवेश समारोह के लिए शुभ, पारंपरिक और सुंदर निमंत्रण कार्ड डिजाइन।",
+  },
 };
+
+/* ===============================
+   Category Normalize
+================================ */
 
 function normalizeCategory(category) {
   const value = String(category || "").trim();
 
-  const oldCategoryMap = {
+  const lowerValue = value.toLowerCase();
+
+  const categoryMap = {
+    "शादी कार्ड": "शादी कार्ड",
     wedding: "शादी कार्ड",
+
+    "भागवत": "भागवत",
+    bhagwat: "भागवत",
+    "bhagwat katha": "भागवत",
+
+    "जन्मदिन": "जन्मदिन",
     birthday: "जन्मदिन",
+
+    "गृह प्रवेश": "गृह प्रवेश",
     housewarming: "गृह प्रवेश",
+    "griha pravesh": "गृह प्रवेश",
+
+    "अन्य": "अन्य",
     other: "अन्य",
   };
 
-  return oldCategoryMap[value] || value || "अन्य";
+  return (
+    categoryMap[value] ||
+    categoryMap[lowerValue] ||
+    value ||
+    "अन्य"
+  );
 }
+
+/* ===============================
+   Category Title
+================================ */
 
 function getCategoryTitle(category) {
   const normalizedCategory = normalizeCategory(category);
@@ -202,6 +239,10 @@ function getCategoryTitle(category) {
     CATEGORY_DATA["अन्य"].title
   );
 }
+
+/* ===============================
+   Category Description
+================================ */
 
 function getCategoryDescription(category, title = "") {
   const normalizedCategory = normalizeCategory(category);
@@ -219,8 +260,13 @@ function getCategoryDescription(category, title = "") {
 
 function updateAutoFields() {
   const category = $("category")?.value || "अन्य";
+
   const title = getCategoryTitle(category);
-  const description = getCategoryDescription(category, title);
+
+  const description = getCategoryDescription(
+    category,
+    title,
+  );
 
   if ($("title")) {
     $("title").value = title;
@@ -231,24 +277,41 @@ function updateAutoFields() {
   }
 }
 
-$("category")?.addEventListener("change", updateAutoFields);
+$("category")?.addEventListener(
+  "change",
+  updateAutoFields,
+);
 
 /* ===============================
    Image Preview
 ================================ */
 
 function preview() {
-  const rawUrl = $("imageUrl")?.value.trim() || "";
-  const previewUrl = driveImageUrl(rawUrl);
+  const rawUrl =
+    $("imageUrl")?.value.trim() || "";
 
-  const previewBox = document.querySelector(".url-preview");
-  const previewImage = $("imagePreview");
+  const previewUrl =
+    driveImageUrl(rawUrl);
 
-  if (!previewBox || !previewImage) return;
+  const previewBox =
+    document.querySelector(".url-preview");
 
-  previewBox.classList.remove("has-image", "has-error");
+  const previewImage =
+    $("imagePreview");
 
-  const oldError = previewBox.querySelector(".preview-error");
+  if (!previewBox || !previewImage) {
+    return;
+  }
+
+  previewBox.classList.remove(
+    "has-image",
+    "has-error",
+  );
+
+  const oldError =
+    previewBox.querySelector(
+      ".preview-error",
+    );
 
   if (oldError) {
     oldError.remove();
@@ -260,15 +323,22 @@ function preview() {
   }
 
   previewImage.onload = () => {
-    previewBox.classList.add("has-image");
+    previewBox.classList.add(
+      "has-image",
+    );
   };
 
   previewImage.onerror = () => {
-    previewBox.classList.add("has-error");
+    previewBox.classList.add(
+      "has-error",
+    );
 
-    const error = document.createElement("div");
+    const error =
+      document.createElement("div");
 
-    error.className = "preview-error";
+    error.className =
+      "preview-error";
+
     error.textContent =
       "Image load नहीं हुई। Google Drive में Anyone with the link → Viewer करें।";
 
@@ -296,20 +366,31 @@ function resetForm() {
   editingId = "";
 
   if ($("formTitle")) {
-    $("formTitle").textContent = "नया Design जोड़ें";
+    $("formTitle").textContent =
+      "नया Design जोड़ें";
   }
 
   if ($("saveBtn")) {
-    $("saveBtn").textContent = "Design Save करें";
+    $("saveBtn").textContent =
+      "Design Save करें";
   }
 
-  const previewBox = document.querySelector(".url-preview");
-  const previewImage = $("imagePreview");
+  const previewBox =
+    document.querySelector(".url-preview");
+
+  const previewImage =
+    $("imagePreview");
 
   if (previewBox) {
-    previewBox.classList.remove("has-image", "has-error");
+    previewBox.classList.remove(
+      "has-image",
+      "has-error",
+    );
 
-    const error = previewBox.querySelector(".preview-error");
+    const error =
+      previewBox.querySelector(
+        ".preview-error",
+      );
 
     if (error) {
       error.remove();
@@ -317,7 +398,9 @@ function resetForm() {
   }
 
   if (previewImage) {
-    previewImage.removeAttribute("src");
+    previewImage.removeAttribute(
+      "src",
+    );
   }
 
   if ($("category")) {
@@ -334,8 +417,13 @@ function resetForm() {
 ================================ */
 
 function showApp() {
-  $("loginPanel")?.classList.add("hidden");
-  $("appPanel")?.classList.remove("hidden");
+  $("loginPanel")?.classList.add(
+    "hidden",
+  );
+
+  $("appPanel")?.classList.remove(
+    "hidden",
+  );
 
   loadDesigns();
 }
@@ -349,17 +437,25 @@ async function init() {
     loginMsg(
       "supabase-config.js में Project URL और Publishable Key जांचें।",
     );
+
     return;
   }
 
   if (!window.supabase) {
-    loginMsg("Supabase library load नहीं हुई।");
+    loginMsg(
+      "Supabase library load नहीं हुई।",
+    );
+
     return;
   }
 
-  sb = window.supabase.createClient(cfg.url, cfg.anonKey);
+  sb = window.supabase.createClient(
+    cfg.url,
+    cfg.anonKey,
+  );
 
-  const { data, error } = await sb.auth.getSession();
+  const { data, error } =
+    await sb.auth.getSession();
 
   if (error) {
     loginMsg(error.message);
@@ -375,33 +471,47 @@ async function init() {
    Login
 ================================ */
 
-$("loginForm")?.addEventListener("submit", async (event) => {
-  event.preventDefault();
+$("loginForm")?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
 
-  if (!sb) {
-    loginMsg("Supabase अभी configure नहीं है।");
-    return;
-  }
+    if (!sb) {
+      loginMsg(
+        "Supabase अभी configure नहीं है।",
+      );
 
-  const email = $("loginEmail")?.value.trim() || "";
-  const password = $("loginPassword")?.value || "";
+      return;
+    }
 
-  if (!email || !password) {
-    loginMsg("Email और Password भरें।");
-    return;
-  }
+    const email =
+      $("loginEmail")?.value.trim() ||
+      "";
 
-  const { error } = await sb.auth.signInWithPassword({
-    email,
-    password,
-  });
+    const password =
+      $("loginPassword")?.value || "";
 
-  if (error) {
-    loginMsg(error.message);
-  } else {
-    showApp();
-  }
-});
+    if (!email || !password) {
+      loginMsg(
+        "Email और Password भरें।",
+      );
+
+      return;
+    }
+
+    const { error } =
+      await sb.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+    if (error) {
+      loginMsg(error.message);
+    } else {
+      showApp();
+    }
+  },
+);
 
 /* ===============================
    Logout
@@ -415,129 +525,203 @@ async function logout() {
   location.reload();
 }
 
-$("logoutBtn")?.addEventListener("click", logout);
-$("mobileLogout")?.addEventListener("click", logout);
+$("logoutBtn")?.addEventListener(
+  "click",
+  logout,
+);
+
+$("mobileLogout")?.addEventListener(
+  "click",
+  logout,
+);
 
 /* ===============================
    Form Controls
 ================================ */
 
-$("cancelBtn")?.addEventListener("click", resetForm);
-$("resetBtn")?.addEventListener("click", resetForm);
-$("imageUrl")?.addEventListener("input", preview);
+$("cancelBtn")?.addEventListener(
+  "click",
+  resetForm,
+);
 
-$("newDesignBtn")?.addEventListener("click", () => {
-  resetForm();
+$("resetBtn")?.addEventListener(
+  "click",
+  resetForm,
+);
 
-  $("formPanel")?.scrollIntoView({
-    behavior: "smooth",
-    block: "start",
-  });
+$("imageUrl")?.addEventListener(
+  "input",
+  preview,
+);
 
-  $("title")?.focus();
-});
+$("newDesignBtn")?.addEventListener(
+  "click",
+  () => {
+    resetForm();
 
-$("menuBtn")?.addEventListener("click", () => {
-  document.querySelector(".sidebar")?.classList.toggle("open");
-});
+    $("formPanel")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    $("title")?.focus();
+  },
+);
+
+$("menuBtn")?.addEventListener(
+  "click",
+  () => {
+    document
+      .querySelector(".sidebar")
+      ?.classList.toggle("open");
+  },
+);
 
 /* ===============================
    Admin Search & Category Filter
 ================================ */
 
-$("searchInput")?.addEventListener("input", renderDesigns);
-$("categoryFilter")?.addEventListener("change", renderDesigns);
-$("filterCategory")?.addEventListener("change", renderDesigns);
+$("searchInput")?.addEventListener(
+  "input",
+  renderDesigns,
+);
+
+$("categoryFilter")?.addEventListener(
+  "change",
+  renderDesigns,
+);
+
+$("filterCategory")?.addEventListener(
+  "change",
+  renderDesigns,
+);
 
 /* ===============================
    Save / Update Design
 ================================ */
 
-$("designForm")?.addEventListener("submit", async (event) => {
-  event.preventDefault();
+$("designForm")?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
 
-  if (!sb) {
-    showMsg("Supabase connection उपलब्ध नहीं है।", "error");
-    return;
-  }
+    if (!sb) {
+      showMsg(
+        "Supabase connection उपलब्ध नहीं है।",
+        "error",
+      );
 
-  const category = normalizeCategory(
-    $("category")?.value || "अन्य",
-  );
-
-  const title = getCategoryTitle(category);
-  const description = getCategoryDescription(category, title);
-
-  const is_published = $("published")?.checked ?? true;
-
-  const originalImageUrl =
-    $("imageUrl")?.value.trim() || "";
-
-  const image_url = driveImageUrl(originalImageUrl);
-  const id = $("designId")?.value || "";
-
-  if (!originalImageUrl) {
-    showMsg("Google Drive Image URL भरना जरूरी है।", "error");
-
-    $("imageUrl")?.focus();
-
-    return;
-  }
-
-  const saveButton = $("saveBtn");
-
-  if (saveButton) {
-    saveButton.disabled = true;
-    saveButton.textContent = id ? "Updating..." : "Saving...";
-  }
-
-  try {
-    const payload = {
-      title,
-      category,
-      description,
-      image_url,
-      is_published,
-    };
-
-    let result;
-
-    if (id) {
-      result = await sb
-        .from("designs")
-        .update(payload)
-        .eq("id", id);
-    } else {
-      result = await sb
-        .from("designs")
-        .insert([payload]);
+      return;
     }
 
-    if (result.error) {
-      throw result.error;
+    const category =
+      normalizeCategory(
+        $("category")?.value ||
+          "अन्य",
+      );
+
+    const title =
+      getCategoryTitle(category);
+
+    const description =
+      getCategoryDescription(
+        category,
+        title,
+      );
+
+    const is_published =
+      $("published")?.checked ?? true;
+
+    const originalImageUrl =
+      $("imageUrl")?.value.trim() ||
+      "";
+
+    const image_url =
+      driveImageUrl(
+        originalImageUrl,
+      );
+
+    const id =
+      $("designId")?.value || "";
+
+    if (!originalImageUrl) {
+      showMsg(
+        "Google Drive Image URL भरना जरूरी है।",
+        "error",
+      );
+
+      $("imageUrl")?.focus();
+
+      return;
     }
 
-    showMsg(
-      id
-        ? "Design सफलतापूर्वक update हो गया।"
-        : "Design सफलतापूर्वक save हो गया।",
-    );
+    const saveButton =
+      $("saveBtn");
 
-    resetForm();
-
-    await loadDesigns();
-  } catch (error) {
-    showMsg(
-      error.message || "Design save करते समय समस्या हुई।",
-      "error",
-    );
-  } finally {
     if (saveButton) {
-      saveButton.disabled = false;
-      saveButton.textContent = "Design Save करें";
+      saveButton.disabled = true;
+
+      saveButton.textContent =
+        id
+          ? "Updating..."
+          : "Saving...";
     }
-  }
-});
+
+    try {
+      const payload = {
+        title,
+        category,
+        description,
+        image_url,
+        is_published,
+      };
+
+      let result;
+
+      if (id) {
+        result = await sb
+          .from("designs")
+          .update(payload)
+          .eq("id", id);
+      } else {
+        result = await sb
+          .from("designs")
+          .insert([payload]);
+      }
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      showMsg(
+        id
+          ? "Design सफलतापूर्वक update हो गया।"
+          : "Design सफलतापूर्वक save हो गया।",
+      );
+
+      resetForm();
+
+      await loadDesigns();
+
+    } catch (error) {
+
+      showMsg(
+        error.message ||
+          "Design save करते समय समस्या हुई।",
+        "error",
+      );
+
+    } finally {
+
+      if (saveButton) {
+        saveButton.disabled = false;
+
+        saveButton.textContent =
+          "Design Save करें";
+      }
+    }
+  },
+);
 
 /* ===============================
    Load Designs
@@ -546,22 +730,32 @@ $("designForm")?.addEventListener("submit", async (event) => {
 async function loadDesigns() {
   if (!sb) return;
 
-  const { data, error } = await sb
-    .from("designs")
-    .select("*")
-    .order("created_at", {
-      ascending: false,
-    });
+  const { data, error } =
+    await sb
+      .from("designs")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending: false,
+        },
+      );
 
   if (error) {
-    showMsg(error.message, "error");
+    showMsg(
+      error.message,
+      "error",
+    );
+
     return;
   }
 
   allDesigns = data || [];
 
   updateCounts();
+
   renderDesigns();
+
   renderGalleryDesigns();
 }
 
@@ -571,19 +765,24 @@ async function loadDesigns() {
 
 function updateCounts() {
   if ($("totalCount")) {
-    $("totalCount").textContent = allDesigns.length;
+    $("totalCount").textContent =
+      allDesigns.length;
   }
 
   if ($("publishedCount")) {
-    $("publishedCount").textContent = allDesigns.filter(
-      (design) => design.is_published,
-    ).length;
+    $("publishedCount").textContent =
+      allDesigns.filter(
+        (design) =>
+          design.is_published,
+      ).length;
   }
 
   if ($("hiddenCount")) {
-    $("hiddenCount").textContent = allDesigns.filter(
-      (design) => !design.is_published,
-    ).length;
+    $("hiddenCount").textContent =
+      allDesigns.filter(
+        (design) =>
+          !design.is_published,
+      ).length;
   }
 }
 
@@ -592,50 +791,85 @@ function updateCounts() {
 ================================ */
 
 function renderDesigns() {
-  const rows = $("designRows");
+  const rows =
+    $("designRows");
 
   if (!rows) return;
 
   const searchTerm =
-    $("searchInput")?.value.toLowerCase().trim() || "";
+    $("searchInput")
+      ?.value
+      .toLowerCase()
+      .trim() || "";
 
   const categoryFilter =
-    $("categoryFilter") || $("filterCategory");
+    $("categoryFilter") ||
+    $("filterCategory");
 
   const selectedCategory =
-    categoryFilter?.value.trim() || "all";
+    categoryFilter?.value.trim() ||
+    "all";
 
-  const filteredDesigns = allDesigns.filter((design) => {
-    const title = String(design.title || "").toLowerCase();
-    const category = String(
-      normalizeCategory(design.category || ""),
-    ).toLowerCase();
+  const normalizedSelectedCategory =
+    selectedCategory === "all"
+      ? "all"
+      : normalizeCategory(
+          selectedCategory,
+        );
 
-    const description = String(
-      design.description || "",
-    ).toLowerCase();
+  const filteredDesigns =
+    allDesigns.filter(
+      (design) => {
 
-    const matchesSearch =
-      !searchTerm ||
-      title.includes(searchTerm) ||
-      category.includes(searchTerm) ||
-      description.includes(searchTerm);
+        const title =
+          String(
+            design.title || "",
+          ).toLowerCase();
 
-    const normalizedSelectedCategory =
-      normalizeCategory(selectedCategory);
+        const category =
+          normalizeCategory(
+            design.category || "",
+          ).toLowerCase();
 
-    const matchesCategory =
-      selectedCategory === "all" ||
-      normalizeCategory(design.category) ===
-        normalizedSelectedCategory;
+        const description =
+          String(
+            design.description || "",
+          ).toLowerCase();
 
-    return matchesSearch && matchesCategory;
-  });
+        const matchesSearch =
+          !searchTerm ||
+          title.includes(
+            searchTerm,
+          ) ||
+          category.includes(
+            searchTerm,
+          ) ||
+          description.includes(
+            searchTerm,
+          );
 
-  if (filteredDesigns.length === 0) {
+        const matchesCategory =
+          normalizedSelectedCategory ===
+            "all" ||
+          normalizeCategory(
+            design.category,
+          ) ===
+            normalizedSelectedCategory;
+
+        return (
+          matchesSearch &&
+          matchesCategory
+        );
+      },
+    );
+
+  if (!filteredDesigns.length) {
     rows.innerHTML = `
       <tr>
-        <td colspan="5" class="empty-state">
+        <td
+          colspan="5"
+          class="empty-state"
+        >
           इस Category में कोई design नहीं मिला।
         </td>
       </tr>
@@ -644,81 +878,106 @@ function renderDesigns() {
     return;
   }
 
-  rows.innerHTML = filteredDesigns
-    .map((design) => {
-      const imageUrl = escapeHtml(
-        driveImageUrl(design.image_url),
-      );
+  rows.innerHTML =
+    filteredDesigns
+      .map(
+        (design) => {
 
-      const category = normalizeCategory(design.category);
+          const imageUrl =
+            escapeHtml(
+              driveImageUrl(
+                design.image_url,
+              ),
+            );
 
-      return `
-        <tr>
-          <td>
-            <img
-              class="table-image"
-              src="${imageUrl}"
-              alt="${escapeHtml(design.title || "")}"
-              loading="lazy"
-              onerror="
-                this.onerror=null;
-                this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2212%22 text-anchor=%22middle%22 fill=%22%23666666%22%3ENo Image%3C/text%3E%3C/svg%3E';
-              "
-            >
-          </td>
+          const category =
+            normalizeCategory(
+              design.category,
+            );
 
-          <td>
-            <strong>
-              ${escapeHtml(
-                design.title || getCategoryTitle(category),
-              )}
-            </strong>
+          return `
+            <tr>
 
-            <small>
-              ${escapeHtml(
-                design.description ||
-                  getCategoryDescription(category),
-              )}
-            </small>
-          </td>
+              <td>
+                <img
+                  class="table-image"
+                  src="${imageUrl}"
+                  alt="${escapeHtml(
+                    design.title || "",
+                  )}"
+                  loading="lazy"
+                  onerror="
+                    this.onerror=null;
+                    this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2212%22 text-anchor=%22middle%22 fill=%22%23666666%22%3ENo Image%3C/text%3E%3C/svg%3E';
+                  "
+                >
+              </td>
 
-          <td>
-            ${escapeHtml(category)}
-          </td>
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    design.title ||
+                      getCategoryTitle(
+                        category,
+                      ),
+                  )}
+                </strong>
 
-          <td>
-            <span class="status ${
-              design.is_published
-                ? "published"
-                : "hidden-status"
-            }">
-              ${
-                design.is_published
-                  ? "Published"
-                  : "Hidden"
-              }
-            </span>
-          </td>
+                <small>
+                  ${escapeHtml(
+                    design.description ||
+                      getCategoryDescription(
+                        category,
+                      ),
+                  )}
+                </small>
+              </td>
 
-          <td class="actions">
-            <button
-              class="btn btn-light btn-mini"
-              onclick="editDesign('${design.id}')"
-            >
-              Edit
-            </button>
+              <td>
+                ${escapeHtml(
+                  category,
+                )}
+              </td>
 
-            <button
-              class="btn btn-danger btn-mini"
-              onclick="deleteDesign('${design.id}')"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      `;
-    })
-    .join("");
+              <td>
+                <span
+                  class="status ${
+                    design.is_published
+                      ? "published"
+                      : "hidden-status"
+                  }"
+                >
+                  ${
+                    design.is_published
+                      ? "Published"
+                      : "Hidden"
+                  }
+                </span>
+              </td>
+
+              <td class="actions">
+
+                <button
+                  class="btn btn-light btn-mini"
+                  onclick="editDesign('${design.id}')"
+                >
+                  Edit
+                </button>
+
+                <button
+                  class="btn btn-danger btn-mini"
+                  onclick="deleteDesign('${design.id}')"
+                >
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+          `;
+        },
+      )
+      .join("");
 }
 
 /* ===============================
@@ -727,24 +986,67 @@ function renderDesigns() {
 
 function initGalleryFilters() {
   const filterButtons =
-    document.querySelectorAll(".filter-btn");
+    document.querySelectorAll(
+      ".filter-btn",
+    );
 
-  if (!filterButtons.length) return;
+  if (!filterButtons.length) {
+    console.warn(
+      "Gallery filter buttons नहीं मिले",
+    );
 
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      filterButtons.forEach((btn) => {
-        btn.classList.remove("active");
-      });
+    return;
+  }
 
-      button.classList.add("active");
+  filterButtons.forEach(
+    (button) => {
 
-      selectedGalleryCategory =
-        button.dataset.filter || "all";
+      // Duplicate listener से बचाएं
+      if (
+        button.dataset
+          .galleryFilterInitialized ===
+        "true"
+      ) {
+        return;
+      }
 
-      renderGalleryDesigns();
-    });
-  });
+      button.dataset
+        .galleryFilterInitialized =
+        "true";
+
+      button.addEventListener(
+        "click",
+        function (event) {
+
+          event.preventDefault();
+
+          // Active button
+          filterButtons.forEach(
+            (btn) => {
+              btn.classList.remove(
+                "active",
+              );
+            },
+          );
+
+          this.classList.add(
+            "active",
+          );
+
+          // Selected category
+          selectedGalleryCategory =
+            String(
+              this.getAttribute(
+                "data-filter",
+              ) || "all",
+            ).trim();
+
+          // Render
+          renderGalleryDesigns();
+        },
+      );
+    },
+  );
 }
 
 /* ===============================
@@ -753,9 +1055,15 @@ function initGalleryFilters() {
 
 function getGalleryContainer() {
   return (
-    document.querySelector(".design-gallery") ||
-    document.querySelector("#designGallery") ||
-    document.querySelector("[data-design-gallery]")
+    document.querySelector(
+      ".design-gallery",
+    ) ||
+    document.querySelector(
+      "#designGallery",
+    ) ||
+    document.querySelector(
+      "[data-design-gallery]",
+    )
   );
 }
 
@@ -764,21 +1072,65 @@ function getGalleryContainer() {
 ================================ */
 
 function renderGalleryDesigns() {
-  const gallery = getGalleryContainer();
+  const gallery =
+    getGalleryContainer();
 
-  if (!gallery) return;
+  if (!gallery) {
+    console.warn(
+      "Gallery container नहीं मिला",
+    );
 
-  const filteredDesigns = allDesigns.filter((design) => {
-    const category = normalizeCategory(design.category);
+    return;
+  }
 
-    const matchesCategory =
-      selectedGalleryCategory === "all" ||
-      category === selectedGalleryCategory;
+  const selectedCategory =
+    String(
+      selectedGalleryCategory ||
+        "all",
+    ).trim();
 
-    return design.is_published && matchesCategory;
-  });
+  const normalizedSelectedCategory =
+    selectedCategory === "all"
+      ? "all"
+      : normalizeCategory(
+          selectedCategory,
+        );
+
+  const filteredDesigns =
+    allDesigns.filter(
+      (design) => {
+
+        // केवल published
+        if (
+          design.is_published !==
+          true
+        ) {
+          return false;
+        }
+
+        // सभी
+        if (
+          normalizedSelectedCategory ===
+          "all"
+        ) {
+          return true;
+        }
+
+        // Database category
+        const designCategory =
+          normalizeCategory(
+            design.category,
+          );
+
+        return (
+          designCategory ===
+          normalizedSelectedCategory
+        );
+      },
+    );
 
   if (!filteredDesigns.length) {
+
     gallery.innerHTML = `
       <div class="empty-gallery">
         इस Category में अभी कोई design उपलब्ध नहीं है।
@@ -788,150 +1140,222 @@ function renderGalleryDesigns() {
     return;
   }
 
-  gallery.innerHTML = filteredDesigns
-    .map((design) => {
-      const imageUrl = escapeHtml(
-        driveImageUrl(design.image_url),
-      );
+  gallery.innerHTML =
+    filteredDesigns
+      .map(
+        (design) => {
 
-      const title = escapeHtml(
-        design.title ||
-          getCategoryTitle(design.category),
-      );
+          const imageUrl =
+            escapeHtml(
+              driveImageUrl(
+                design.image_url,
+              ),
+            );
 
-      const description = escapeHtml(
-        design.description ||
-          getCategoryDescription(design.category),
-      );
+          const title =
+            escapeHtml(
+              design.title ||
+                getCategoryTitle(
+                  design.category,
+                ),
+            );
 
-      return `
-        <div class="design-card">
-          <div class="design-image-wrapper">
-            <img
-              class="design-image"
-              src="${imageUrl}"
-              alt="${title}"
-              loading="lazy"
-              onerror="
-                this.onerror=null;
-                this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22600%22%3E%3Crect width=%22500%22 height=%22600%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%22250%22 y=%22300%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22%23666666%22%3ENo Image%3C/text%3E%3C/svg%3E';
-              "
-            >
-          </div>
+          const description =
+            escapeHtml(
+              design.description ||
+                getCategoryDescription(
+                  design.category,
+                ),
+            );
 
-          <div class="design-card-content">
-            <h3>${title}</h3>
-            <p>${description}</p>
-          </div>
-        </div>
-      `;
-    })
-    .join("");
+          return `
+            <div class="design-card">
+
+              <div class="design-image-wrapper">
+
+                <img
+                  class="design-image"
+                  src="${imageUrl}"
+                  alt="${title}"
+                  loading="lazy"
+                  onerror="
+                    this.onerror=null;
+                    this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22600%22%3E%3Crect width=%22500%22 height=%22600%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%22250%22 y=%22300%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22%23666666%22%3ENo Image%3C/text%3E%3C/svg%3E';
+                  "
+                >
+
+              </div>
+
+              <div class="design-card-content">
+
+                <h3>
+                  ${title}
+                </h3>
+
+                <p>
+                  ${description}
+                </p>
+
+              </div>
+
+            </div>
+          `;
+        },
+      )
+      .join("");
 }
 
 /* ===============================
    Edit Design
 ================================ */
 
-window.editDesign = function (id) {
-  const item = allDesigns.find(
-    (design) => design.id === id,
-  );
+window.editDesign =
+  function (id) {
 
-  if (!item) return;
+    const item =
+      allDesigns.find(
+        (design) =>
+          design.id === id,
+      );
 
-  const category = normalizeCategory(item.category);
-  const title = getCategoryTitle(category);
-  const description = getCategoryDescription(
-    category,
-    title,
-  );
+    if (!item) return;
 
-  if ($("designId")) {
-    $("designId").value = item.id;
-  }
+    const category =
+      normalizeCategory(
+        item.category,
+      );
 
-  if ($("category")) {
-    $("category").value = category;
-  }
+    const title =
+      getCategoryTitle(
+        category,
+      );
 
-  if ($("title")) {
-    $("title").value = title;
-  }
+    const description =
+      getCategoryDescription(
+        category,
+        title,
+      );
 
-  if ($("description")) {
-    $("description").value = description;
-  }
+    if ($("designId")) {
+      $("designId").value =
+        item.id;
+    }
 
-  if ($("published")) {
-    $("published").checked = item.is_published;
-  }
+    if ($("category")) {
+      $("category").value =
+        category;
+    }
 
-  if ($("imageUrl")) {
-    $("imageUrl").value = item.image_url || "";
-  }
+    if ($("title")) {
+      $("title").value =
+        title;
+    }
 
-  if ($("formTitle")) {
-    $("formTitle").textContent = "Design Edit करें";
-  }
+    if ($("description")) {
+      $("description").value =
+        description;
+    }
 
-  if ($("saveBtn")) {
-    $("saveBtn").textContent = "Update Design";
-  }
+    if ($("published")) {
+      $("published").checked =
+        item.is_published;
+    }
 
-  editingId = item.id;
+    if ($("imageUrl")) {
+      $("imageUrl").value =
+        item.image_url || "";
+    }
 
-  preview();
+    if ($("formTitle")) {
+      $("formTitle").textContent =
+        "Design Edit करें";
+    }
 
-  $("formPanel")?.scrollIntoView({
-    behavior: "smooth",
-    block: "start",
-  });
-};
+    if ($("saveBtn")) {
+      $("saveBtn").textContent =
+        "Update Design";
+    }
+
+    editingId = item.id;
+
+    preview();
+
+    $("formPanel")?.scrollIntoView(
+      {
+        behavior: "smooth",
+        block: "start",
+      },
+    );
+  };
 
 /* ===============================
    Delete Design
 ================================ */
 
-window.deleteDesign = async function (id) {
-  if (!sb) {
-    showMsg("Supabase connection उपलब्ध नहीं है।", "error");
-    return;
-  }
+window.deleteDesign =
+  async function (id) {
 
-  const confirmed = confirm(
-    "क्या आप यह design delete करना चाहते हैं?",
-  );
+    if (!sb) {
+      showMsg(
+        "Supabase connection उपलब्ध नहीं है।",
+        "error",
+      );
 
-  if (!confirmed) return;
+      return;
+    }
 
-  const { error } = await sb
-    .from("designs")
-    .delete()
-    .eq("id", id);
+    const confirmed =
+      confirm(
+        "क्या आप यह design delete करना चाहते हैं?",
+      );
 
-  if (error) {
-    showMsg(error.message, "error");
-    return;
-  }
+    if (!confirmed) return;
 
-  showMsg("Design सफलतापूर्वक delete हो गया।");
+    const { error } =
+      await sb
+        .from("designs")
+        .delete()
+        .eq("id", id);
 
-  await loadDesigns();
-};
+    if (error) {
+      showMsg(
+        error.message,
+        "error",
+      );
+
+      return;
+    }
+
+    showMsg(
+      "Design सफलतापूर्वक delete हो गया।",
+    );
+
+    await loadDesigns();
+  };
 
 /* ===============================
    Start
 ================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
-  initGalleryFilters();
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
 
-  if ($("category") && !$("category").value) {
-    $("category").value = "अन्य";
-  }
+    initGalleryFilters();
 
-  updateAutoFields();
-});
+    if (
+      $("category") &&
+      !$("category").value
+    ) {
+      $("category").value =
+        "अन्य";
+    }
+
+    updateAutoFields();
+
+    // Initial Gallery
+    renderGalleryDesigns();
+  },
+);
 
 init();
