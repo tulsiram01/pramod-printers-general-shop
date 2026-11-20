@@ -335,6 +335,16 @@ function preview() {
     return;
   }
 
+  if (!previewUrl) {
+    previewBox.classList.add("has-error");
+    const error = document.createElement("div");
+    error.className = "preview-error";
+    error.textContent = "कृपया सही HTTP/HTTPS image URL दर्ज करें।";
+    previewBox.appendChild(error);
+    previewImage.removeAttribute("src");
+    return;
+  }
+
   previewImage.onload = () => {
     previewBox.classList.add(
       "has-image",
@@ -480,6 +490,7 @@ async function init() {
       loginMsg("इस account को Admin access नहीं दिया गया है।");
       return;
     }
+    isAuthenticatedAdmin = true;
     showApp();
   }
 }
@@ -530,6 +541,7 @@ $("loginForm")?.addEventListener(
       return;
     }
 
+    isAuthenticatedAdmin = true;
     showApp();
   },
 );
@@ -541,8 +553,10 @@ $("loginForm")?.addEventListener(
 const SESSION_TIMEOUT = 10 * 60 * 1000; // 10 minutes
 
 let sessionTimer = null;
+let isAuthenticatedAdmin = false;
 
 async function logout() {
+  isAuthenticatedAdmin = false;
   try {
     if (sb) {
       await sb.auth.signOut();
@@ -557,6 +571,7 @@ async function logout() {
 
 function resetSessionTimer() {
   clearTimeout(sessionTimer);
+  if (!isAuthenticatedAdmin) return;
 
   sessionTimer = setTimeout(() => {
     logout();
@@ -692,11 +707,6 @@ $("categoryFilter")?.addEventListener(
   renderDesigns,
 );
 
-$("filterCategory")?.addEventListener(
-  "change",
-  renderDesigns,
-);
-
 /* ===============================
    Save / Update Design
 ================================ */
@@ -745,9 +755,9 @@ $("designForm")?.addEventListener(
     const id =
       $("designId")?.value || "";
 
-    if (!originalImageUrl) {
+    if (!originalImageUrl || !image_url) {
       showMsg(
-        "Google Drive Image URL भरना जरूरी है।",
+        "कृपया सही HTTP/HTTPS image URL दर्ज करें।",
         "error",
       );
 
@@ -1176,13 +1186,7 @@ function renderGalleryDesigns() {
   const gallery =
     getGalleryContainer();
 
-  if (!gallery) {
-    console.warn(
-      "Gallery container नहीं मिला",
-    );
-
-    return;
-  }
+  if (!gallery) return;
 
   const selectedCategory =
     String(
