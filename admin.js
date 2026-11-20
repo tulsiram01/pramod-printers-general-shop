@@ -491,6 +491,14 @@ $("loginForm")?.addEventListener(
       return;
     }
 
+    const now = Date.now();
+    const waitMs = LOGIN_REQUEST_COOLDOWN_MS - (now - lastLoginRequestAt);
+    if (waitMs > 0) {
+      loginMsg(`कृपया ${Math.ceil(waitMs / 1000)} सेकंड बाद दोबारा कोशिश करें।`, "error");
+      return;
+    }
+    lastLoginRequestAt = now;
+
     const loginButton = $("loginBtn");
     const loginButtonText = $("loginBtnText");
     const setLoginLoading = (loading) => {
@@ -510,7 +518,11 @@ $("loginForm")?.addEventListener(
       const { error } = await sb.auth.signInWithPassword({ email, password });
 
       if (error) {
-        loginMsg(error.message);
+        if (error.status === 429 || /rate.?limit|too many requests/i.test(error.message || "")) {
+          loginMsg("बहुत अधिक Login प्रयास हुए हैं। कुछ मिनट प्रतीक्षा करें और फिर कोशिश करें।", "error");
+        } else {
+          loginMsg("Email या Password सही नहीं है। कृपया दोबारा जाँचें।", "error");
+        }
         return;
       }
 
@@ -540,6 +552,11 @@ const SESSION_TIMEOUT = 10 * 60 * 1000; // 10 minutes
 
 let sessionTimer = null;
 let isAuthenticatedAdmin = false;
+
+// Client-side duplicate-submit guard only; Supabase Auth enforces the real
+// IP-based rate limit on the server.
+let lastLoginRequestAt = 0;
+const LOGIN_REQUEST_COOLDOWN_MS = 2500;
 
 async function logout() {
   isAuthenticatedAdmin = false;
