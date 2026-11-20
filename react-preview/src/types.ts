@@ -20,7 +20,7 @@ export function normalizeCategory(value: string): string {
     housewarming: "गृह प्रवेश", "griha pravesh": "गृह प्रवेश", "गृह प्रवेश": "गृह प्रवेश",
     other: "अन्य", "अन्य": "अन्य",
   };
-  return map[key] ?? value || "अन्य";
+  return map[key] ?? (value || "अन्य");
 }
 
 export function imageUrl(value: string): string {
