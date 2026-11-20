@@ -75,6 +75,14 @@ function driveImageUrl(value) {
 
   if (!rawUrl) return "";
 
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(rawUrl);
+  } catch {
+    return "";
+  }
+  if (!["http:", "https:"].includes(parsedUrl.protocol)) return "";
+
   let fileId = "";
   let match;
 
@@ -466,6 +474,12 @@ async function init() {
   }
 
   if (data?.session) {
+    const { data: isAdmin, error: roleError } = await sb.rpc("is_admin");
+    if (roleError || isAdmin !== true) {
+      await sb.auth.signOut();
+      loginMsg("इस account को Admin access नहीं दिया गया है।");
+      return;
+    }
     showApp();
   }
 }
@@ -502,17 +516,21 @@ $("loginForm")?.addEventListener(
       return;
     }
 
-    const { error } =
-      await sb.auth.signInWithPassword({
-        email,
-        password,
-      });
+    const { error } = await sb.auth.signInWithPassword({ email, password });
 
     if (error) {
       loginMsg(error.message);
-    } else {
-      showApp();
+      return;
     }
+
+    const { data: isAdmin, error: roleError } = await sb.rpc("is_admin");
+    if (roleError || isAdmin !== true) {
+      await sb.auth.signOut();
+      loginMsg("Login सफल हुआ, लेकिन इस account को Admin access नहीं दिया गया है।");
+      return;
+    }
+
+    showApp();
   },
 );
 
@@ -703,14 +721,14 @@ $("designForm")?.addEventListener(
           "अन्य",
       );
 
-    const title =
-      getCategoryTitle(category);
+    const title = $("title")?.value.trim() || "";
+    const description = $("description")?.value.trim() || "";
 
-    const description =
-      getCategoryDescription(
-        category,
-        title,
-      );
+    if (!title) {
+      showMsg("Design title भरना जरूरी है।", "error");
+      $("title")?.focus();
+      return;
+    }
 
     const is_published =
       $("published")?.checked ?? true;
@@ -1308,16 +1326,8 @@ window.editDesign =
         item.category,
       );
 
-    const title =
-      getCategoryTitle(
-        category,
-      );
-
-    const description =
-      getCategoryDescription(
-        category,
-        title,
-      );
+    const title = item.title || getCategoryTitle(category);
+    const description = item.description || getCategoryDescription(category, title);
 
     if ($("designId")) {
       $("designId").value =
