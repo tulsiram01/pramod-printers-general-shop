@@ -427,10 +427,7 @@ function resetForm() {
   }
 
   if ($("category")) {
-    if (!$("category").value) {
-      $("category").value = "अन्य";
-    }
-
+    $("category").value = "अन्य";
     updateAutoFields();
   }
 }
