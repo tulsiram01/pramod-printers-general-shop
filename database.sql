@@ -41,7 +41,7 @@ grant execute on function public.is_admin() to authenticated;
 
 -- Remove every existing policy on these tables so an older permissive
 -- policy cannot accidentally OR-bypass the administrator restrictions.
-do $
+do $policy_cleanup$
 declare
   policy_row record;
 begin
@@ -59,7 +59,7 @@ begin
     );
   end loop;
 end
-$;
+$policy_cleanup$;
 
 -- Keep API table privileges explicit; RLS still decides which rows/actions apply.
 revoke all on table public.designs from anon, authenticated;
