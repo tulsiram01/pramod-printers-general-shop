@@ -1096,7 +1096,7 @@ html[data-theme="light"] .theme-toggle__icon--moon{opacity:1;transform:scale(1) 
           <textarea id="message" name="message" rows="4" required placeholder="A few lines about what you need…"></textarea>
         </div>
         <div class="field field--full field--submit">
-          <button class="btn btn--primary" type="submit">Send message</button>
+          <button class="btn btn--primary" type="submit">Send via WhatsApp</button>
           <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
         </div>
       </form>
@@ -1589,14 +1589,30 @@ sections.forEach(s => navObserver.observe(s));
 /* ============================================================
    CONTACT FORM
 ============================================================ */
-document.getElementById('contactForm').addEventListener('submit', e => {
+document.getElementById('contactForm')?.addEventListener('submit', e => {
   e.preventDefault();
+  const form = e.currentTarget;
   const note = document.getElementById('formNote');
-  const name = e.target.name.value.trim();
-  if(!name){ note.textContent = 'Please add your name.'; return; }
-  note.textContent = `Thanks ${name}! I'll get back to you within 24 hours.`;
-  e.target.reset();
-  setTimeout(() => { note.textContent = ''; }, 6000);
+  const name = form.elements.name.value.trim();
+  const email = form.elements.email.value.trim();
+  const message = form.elements.message.value.trim();
+
+  if (!form.reportValidity()) return;
+  if (!name || !email || !message) {
+    note.textContent = 'Please complete all fields.';
+    return;
+  }
+
+  const whatsappMessage = [
+    'Hello, I would like to discuss a project.',
+    '',
+    'Name: ' + name,
+    'Email: ' + email,
+    'Project details: ' + message
+  ].join('\\n');
+
+  note.textContent = 'Opening WhatsApp with your message. Please review and send it there.';
+  window.open('https://wa.me/919589445441?text=' + encodeURIComponent(whatsappMessage), '_blank', 'noopener,noreferrer');
 });
 
 /* ============================================================
