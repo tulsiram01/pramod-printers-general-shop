@@ -168,11 +168,23 @@
               <h2>सभी Designs</h2>
               <p class="muted">Upload किए गए designs की सूची</p>
             </div>
-            <input
-              class="search"
-              id="searchInput"
-              placeholder="⌕  Design खोजें..."
-            />
+            <div class="table-filters">
+              <input
+                class="search"
+                id="searchInput"
+                type="search"
+                placeholder="⌕  Design खोजें..."
+                aria-label="Search designs"
+              />
+              <select id="categoryFilter" aria-label="Filter designs by category">
+                <option value="all">सभी Categories</option>
+                <option value="शादी कार्ड">शादी कार्ड</option>
+                <option value="भागवत">भागवत</option>
+                <option value="जन्मदिन">जन्मदिन</option>
+                <option value="गृह प्रवेश">गृह प्रवेश</option>
+                <option value="अन्य">अन्य</option>
+              </select>
+            </div>
           </div>
           <div class="table-wrap">
             <table>
