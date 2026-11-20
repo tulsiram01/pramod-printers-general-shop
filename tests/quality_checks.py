@@ -23,7 +23,7 @@ class AuditParser(HTMLParser):
             self.ids.append(attrs["id"])
         for key in ("src", "href"):
             value = attrs.get(key, "")
-            if value and not value.startswith(("#", "http://", "https://", "mailto:", "tel:", "data:", "javascript:")):
+            if value and "${" not in value and not value.startswith(("#", "http://", "https://", "mailto:", "tel:", "data:", "javascript:")):
                 self.local_refs.append(value.split("?", 1)[0].split("#", 1)[0])
         if tag == "script":
             self._in_script = True
