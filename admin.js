@@ -72,7 +72,6 @@ function loginMsg(text, type = "error") {
 
 function driveImageUrl(value) {
   const rawUrl = String(value || "").trim();
-
   if (!rawUrl) return "";
 
   let parsedUrl;
@@ -81,44 +80,23 @@ function driveImageUrl(value) {
   } catch {
     return "";
   }
+
   if (!["http:", "https:"].includes(parsedUrl.protocol)) return "";
 
-  let fileId = "";
-  let match;
-
-  match = rawUrl.match(
-    /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i,
-  );
-
-  if (match) {
-    fileId = match[1];
-  }
-
-  if (!fileId) {
-    match = rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/i);
-
-    if (match) {
-      fileId = match[1];
+  // Convert only canonical Google Drive share links; never extract IDs from
+  // arbitrary hostnames or URL paths that merely contain drive.google.com.
+  if (parsedUrl.hostname === "drive.google.com") {
+    let fileId = "";
+    const match = parsedUrl.pathname.match(/^\\/file\\/d\\/([a-zA-Z0-9_-]+)/i);
+    if (match) fileId = match[1];
+    if (!fileId) fileId = parsedUrl.searchParams.get("id") || "";
+    if (fileId && /^[a-zA-Z0-9_-]{10,}$/.test(fileId)) {
+      return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1200`;
     }
+    return "";
   }
 
-  if (!fileId) {
-    match = rawUrl.match(/\/d\/([a-zA-Z0-9_-]+)/i);
-
-    if (match) {
-      fileId = match[1];
-    }
-  }
-
-  if (!fileId && /^[a-zA-Z0-9_-]{15,}$/.test(rawUrl)) {
-    fileId = rawUrl;
-  }
-
-  if (fileId) {
-    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
-  }
-
-  return rawUrl;
+  return parsedUrl.href;
 }
 
 /* ===============================
@@ -910,9 +888,7 @@ function renderDesigns() {
       .toLowerCase()
       .trim() || "";
 
-  const categoryFilter =
-    $("categoryFilter") ||
-    $("filterCategory");
+  const categoryFilter = $("categoryFilter");
 
   const selectedCategory =
     categoryFilter?.value.trim() ||
