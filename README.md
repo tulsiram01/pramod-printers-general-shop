@@ -145,6 +145,20 @@ Before using the admin dashboard:
 5. Create the intended admin user in Supabase Authentication.
 6. Verify the RLS policies and test the public gallery and admin operations.
 
+### Grant administrator access
+
+After creating the intended user in **Supabase Authentication → Users**, run this query in the Supabase SQL Editor, replacing the email with the exact administrator email:
+
+```sql
+insert into public.admin_users (user_id)
+select id
+from auth.users
+where email = 'YOUR_ADMIN_EMAIL'
+on conflict (user_id) do nothing;
+```
+
+Only users listed in `public.admin_users` can access the admin dashboard and manage design records. Do not grant admin membership to ordinary customer accounts.
+
 ## Database Setup
 
 The supplied `database.sql` creates the `public.designs` table and enables Row Level Security.
