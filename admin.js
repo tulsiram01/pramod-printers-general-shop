@@ -83,17 +83,16 @@ function driveImageUrl(value) {
 
   if (!["http:", "https:"].includes(parsedUrl.protocol)) return "";
 
-  // Convert only canonical Google Drive share links; never extract IDs from
-  // arbitrary hostnames or URL paths that merely contain drive.google.com.
+  // Only extract file IDs from the canonical Google Drive host.
   if (parsedUrl.hostname === "drive.google.com") {
+    const parts = parsedUrl.pathname.split("/");
     let fileId = "";
-    const match = parsedUrl.pathname.match(/^\\/file\\/d\\/([a-zA-Z0-9_-]+)/i);
-    if (match) fileId = match[1];
-    if (!fileId) fileId = parsedUrl.searchParams.get("id") || "";
-    if (fileId && /^[a-zA-Z0-9_-]{10,}$/.test(fileId)) {
-      return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1200`;
+    if (parts[1] === "file" && parts[2] === "d") {
+      fileId = parts[3] || "";
     }
-    return "";
+    if (!fileId) fileId = parsedUrl.searchParams.get("id") || "";
+    if (!/^[a-zA-Z0-9_-]{10,}$/.test(fileId)) return "";
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1200`;
   }
 
   return parsedUrl.href;
