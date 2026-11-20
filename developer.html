@@ -751,42 +751,24 @@ html[data-theme="light"] .theme-toggle__icon--moon{opacity:1;transform:scale(1) 
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-<!-- ============================= HEADER ============================= -->
-<header class="site-header" id="siteHeader">
-  <div class="container nav-wrap">
-    <a class="brand" href="index.html#home" aria-label="Pramod Printers home">
-      <span class="brand__mark"><img src="assets/logo.png" alt="" /></span>
-      <span class="brand__text">प्रमोद&nbsp;<em>प्रिंटर्स</em><small style="display:block;font:600 11px Poppins,sans-serif;letter-spacing:.04em;color:#7b5555">जनरल शॉप</small></span>
+<!-- ============================= PRAMOD PRINTERS HEADER ============================= -->
+<header class="pp-site-header">
+  <div class="pp-header-inner">
+    <a class="pp-brand" href="index.html#home" aria-label="Pramod Printers home">
+      <img src="assets/logo.png" alt="Pramod Printers logo" />
+      <span>प्रमोद प्रिंटर्स<small>जनरल शॉप</small></span>
     </a>
-
-    <nav class="nav" aria-label="Primary">
-      <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu" type="button">
-        <span class="nav__bars" aria-hidden="true"><span></span><span></span><span></span></span>
-        <span class="sr-only">Toggle menu</span>
-      </button>
-      <ul class="nav__menu" id="navMenu">
-        <li><a class="nav__link" href="index.html#home">होम</a></li>
-        <li><a class="nav__link" href="index.html#services">सेवाएँ</a></li>
-        <li><a class="nav__link" href="index.html#cards">निमंत्रण कार्ड</a></li>
-        <li><a class="nav__link" href="index.html#about">हमारे बारे में</a></li>
-        <li><a class="nav__link" href="index.html#contact">संपर्क</a></li>
-        <li><a class="nav__link" href="privacy.html">Privacy</a></li>
-        <li><a class="nav__link" href="terms.html">Terms</a></li>
-      </ul>
+    <nav class="pp-nav" aria-label="Main navigation">
+      <a href="index.html#home">होम</a>
+      <a href="index.html#services">सेवाएँ</a>
+      <a href="index.html#cards">निमंत्रण कार्ड</a>
+      <a href="index.html#about">हमारे बारे में</a>
+      <a href="index.html#contact">संपर्क</a>
+      <a href="developer.html" aria-current="page">Developer</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a class="pp-nav-cta" href="https://wa.me/919589445441" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>
     </nav>
-
-    <div class="nav__actions">
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" aria-pressed="false">
-        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/>
-          <path d="M12 2.6v2.4M12 19v2.4M2.6 12H5M19 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M18.7 5.3L17 7M7 17l-1.7 1.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-        </svg>
-        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20.5 14.6A8.6 8.6 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <a class="btn btn--primary btn--sm nav__cta" href="https://wa.me/919589445441" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-    </div>
   </div>
 </header>
 
@@ -1105,20 +1087,22 @@ html[data-theme="light"] .theme-toggle__icon--moon{opacity:1;transform:scale(1) 
 
 </main>
 
-<!-- ============================= FOOTER ============================= -->
-<footer class="site-footer">
-  <div class="container footer__inner">
-    <p class="footer__copy">© <span id="year"></span> Tulsiram Chandravanshi. Built with care.</p>
-    <ul class="footer__links">
-      <li><a href="#work">Work</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="https://github.com" target="_blank" rel="noopener">GitHub</a></li>
-      <li><a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a></li>
-      <li><a href="index.html">Pramod Printers</a></li>
-      <li><a href="privacy.html">Privacy Policy</a></li>
-      <li><a href="terms.html">Terms &amp; Conditions</a></li>
-    </ul>
+<!-- ============================= PRAMOD PRINTERS FOOTER ============================= -->
+<footer class="pp-footer">
+  <div class="pp-footer-inner">
+    <a class="pp-footer-brand" href="index.html#home">
+      <img src="assets/logo.png" alt="" />
+      <span>प्रमोद प्रिंटर्स<small>जनरल शॉप</small></span>
+    </a>
+    <p>डिजिटल सेवाएँ, ऑनलाइन फॉर्म और गुणवत्तापूर्ण प्रिंटिंग — सब एक ही जगह।</p>
+    <nav aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="developer.html">Developer</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms &amp; Conditions</a>
+      <a href="https://wa.me/919589445441" target="_blank" rel="noopener noreferrer">Contact / WhatsApp</a>
+    </nav>
+    <small>© <span class="pp-current-year">2026</span> Pramod Printers &amp; General Shop. All rights reserved.</small>
   </div>
 </footer>
 
@@ -1621,7 +1605,9 @@ document.getElementById('contactForm')?.addEventListener('submit', e => {
 /* ============================================================
    FOOTER YEAR
 ============================================================ */
-document.getElementById('year').textContent = new Date().getFullYear();
+document.querySelectorAll('.pp-current-year').forEach(node => {
+  node.textContent = new Date().getFullYear();
+});
 </script>
 </body>
 </html>
