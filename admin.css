@@ -517,3 +517,23 @@ th {
     overflow: hidden;
   }
 }
+
+.table-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.table-filters select {
+  min-width: 170px;
+  margin: 0;
+}
+@media (max-width: 800px) {
+  .table-filters {
+    width: 100%;
+  }
+  .table-filters .search,
+  .table-filters select {
+    width: 100%;
+  }
+}
