@@ -479,44 +479,56 @@ $("loginForm")?.addEventListener(
     event.preventDefault();
 
     if (!sb) {
-      loginMsg(
-        "Supabase अभी configure नहीं है।",
-      );
-
+      loginMsg("Supabase अभी configure नहीं है।");
       return;
     }
 
-    const email =
-      $("loginEmail")?.value.trim() ||
-      "";
-
-    const password =
-      $("loginPassword")?.value || "";
+    const email = $("loginEmail")?.value.trim() || "";
+    const password = $("loginPassword")?.value || "";
 
     if (!email || !password) {
-      loginMsg(
-        "Email और Password भरें।",
-      );
-
+      loginMsg("Email और Password भरें।");
       return;
     }
 
-    const { error } = await sb.auth.signInWithPassword({ email, password });
+    const loginButton = $("loginBtn");
+    const loginButtonText = $("loginBtnText");
+    const setLoginLoading = (loading) => {
+      if (!loginButton) return;
+      loginButton.disabled = loading;
+      loginButton.classList.toggle("is-loading", loading);
+      loginButton.setAttribute("aria-busy", String(loading));
+      if (loginButtonText) {
+        loginButtonText.textContent = loading ? "Login हो रहा है..." : "Login करें";
+      }
+    };
 
-    if (error) {
-      loginMsg(error.message);
-      return;
+    setLoginLoading(true);
+    loginMsg("");
+
+    try {
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        loginMsg(error.message);
+        return;
+      }
+
+      const { data: isAdmin, error: roleError } = await sb.rpc("is_admin");
+      if (roleError || isAdmin !== true) {
+        await sb.auth.signOut();
+        loginMsg("Login सफल हुआ, लेकिन इस account को Admin access नहीं दिया गया है।");
+        return;
+      }
+
+      isAuthenticatedAdmin = true;
+      showApp();
+    } catch (error) {
+      console.error("Admin login error:", error);
+      loginMsg("Login के दौरान समस्या आई। कृपया दोबारा कोशिश करें।");
+    } finally {
+      setLoginLoading(false);
     }
-
-    const { data: isAdmin, error: roleError } = await sb.rpc("is_admin");
-    if (roleError || isAdmin !== true) {
-      await sb.auth.signOut();
-      loginMsg("Login सफल हुआ, लेकिन इस account को Admin access नहीं दिया गया है।");
-      return;
-    }
-
-    isAuthenticatedAdmin = true;
-    showApp();
   },
 );
 
