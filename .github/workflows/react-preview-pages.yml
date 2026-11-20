@@ -1,0 +1,64 @@
+name: React migration build and GitHub Pages preview
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "react-preview/**"
+      - ".github/workflows/react-preview-pages.yml"
+  push:
+    branches: [main]
+    paths:
+      - "react-preview/**"
+      - ".github/workflows/react-preview-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: react-preview
+        run: npm install
+      - name: Type-check and build React app
+        working-directory: react-preview
+        run: npm run build
+      - name: Assemble existing site plus React preview
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p _site
+          rsync -a --exclude='.git' --exclude='.github' --exclude='react-preview' --exclude='_site' ./ _site/
+          mkdir -p _site/react-preview-live
+          cp -a react-preview/dist/. _site/react-preview-live/
+          touch _site/.nojekyll
+      - name: Upload GitHub Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
