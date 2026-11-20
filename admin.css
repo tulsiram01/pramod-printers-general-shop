@@ -537,3 +537,38 @@ th {
     width: 100%;
   }
 }
+
+
+/* Admin login loading state */
+.login-card .btn-full {
+  align-items: center;
+  min-height: 52px;
+  position: relative;
+}
+.login-card .btn-full:disabled {
+  cursor: wait;
+  opacity: .88;
+  transform: none;
+}
+.login-spinner {
+  display: none;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  border: 2.5px solid rgba(255, 255, 255, .42);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: login-spin .7s linear infinite;
+}
+.login-card .btn-full.is-loading .login-spinner {
+  display: inline-block;
+}
+.login-card .btn-full.is-loading .login-btn-arrow {
+  display: none;
+}
+@keyframes login-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-spinner { animation-duration: 1.8s; }
+}
