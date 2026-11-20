@@ -39,17 +39,35 @@ $$;
 revoke all on function public.is_admin() from public;
 grant execute on function public.is_admin() to authenticated;
 
--- Remove the previous broad policies before installing restricted policies.
-drop policy if exists "Public can view published designs" on public.designs;
-drop policy if exists "Authenticated users can view all designs" on public.designs;
-drop policy if exists "Authenticated users can insert designs" on public.designs;
-drop policy if exists "Authenticated users can update designs" on public.designs;
-drop policy if exists "Authenticated users can delete designs" on public.designs;
-drop policy if exists "Public can read published designs" on public.designs;
-drop policy if exists "Admins can read all designs" on public.designs;
-drop policy if exists "Admins can insert designs" on public.designs;
-drop policy if exists "Admins can update designs" on public.designs;
-drop policy if exists "Admins can delete designs" on public.designs;
+-- Remove every existing policy on these tables so an older permissive
+-- policy cannot accidentally OR-bypass the administrator restrictions.
+do $policy_cleanup$
+declare
+  policy_row record;
+begin
+  for policy_row in
+    select schemaname, tablename, policyname
+    from pg_policies
+    where schemaname = 'public'
+      and tablename in ('designs', 'admin_users')
+  loop
+    execute format(
+      'drop policy %I on %I.%I',
+      policy_row.policyname,
+      policy_row.schemaname,
+      policy_row.tablename
+    );
+  end loop;
+end
+$policy_cleanup$;
+
+-- Keep API table privileges explicit; RLS still decides which rows/actions apply.
+revoke all on table public.designs from anon, authenticated;
+grant select on table public.designs to anon, authenticated;
+grant insert, update, delete on table public.designs to authenticated;
+
+revoke all on table public.admin_users from anon, authenticated;
+grant select on table public.admin_users to authenticated;
 
 create policy "Public can read published designs"
 on public.designs for select

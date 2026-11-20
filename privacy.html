@@ -117,16 +117,35 @@
       }
     }
   </style>
+<link rel="stylesheet" href="assets/brand-pages.css" />
+
 </head>
 
 <body>
 
-  <header>
+  <header class="pp-site-header">
+  <div class="pp-header-inner">
+    <a class="pp-brand" href="index.html#home" aria-label="Pramod Printers home">
+      <img src="assets/logo.png" alt="Pramod Printers logo" />
+      <span>प्रमोद प्रिंटर्स<small>जनरल शॉप</small></span>
+    </a>
+    <nav class="pp-nav" aria-label="Main navigation">
+      <a href="index.html#home">होम</a>
+      <a href="index.html#services">सेवाएँ</a>
+      <a href="index.html#cards">निमंत्रण कार्ड</a>
+      <a href="developer.html">Developer</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms &amp; Conditions</a>
+      <a class="pp-nav-cta" href="https://wa.me/919589445441" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+    </nav>
+  </div>
+</header>
+<header class="pp-page-hero">
     <h1>Privacy Policy</h1>
     <p>Pramod Printers &amp; General Shop</p>
   </header>
 
-  <main class="container">
+  <main class="container pp-legal-main">
     <section class="policy-card">
 
 
@@ -225,9 +244,20 @@
     </section>
   </main>
 
-  <footer>
-    © 2026 Pramod Printers &amp; General Shop. All Rights Reserved.
-  </footer>
+  <footer class="pp-footer">
+  <p>© <span class="pp-current-year">2026</span> प्रमोद प्रिंटर्स – जनरल शॉप | सर्वाधिकार सुरक्षित</p>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="developer.html">Developer</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms &amp; Conditions</a>
+  </div>
+</footer>
+<script>
+  document.querySelectorAll(".pp-current-year").forEach(function (node) {
+    node.textContent = new Date().getFullYear();
+  });
+</script>
 
 </body>
 </html>

@@ -4,12 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="Tulsiram Chandravanshi — Developer with 3+ years building fast, accessible web applications. Selected work in web apps, dashboards and APIs." />
-<meta name="theme-color" content="#080a0f" />
+<meta name="theme-color" content="#800000" />
 <title>Tulsiram Chandravanshi — Developer</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Poppins:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet" />
 
 <style>
 /* ============================================================
@@ -744,6 +744,8 @@ html[data-theme="light"] .theme-toggle__icon--moon{opacity:1;transform:scale(1) 
   .hero__photo-badge{bottom:-12px;left:-12px;padding:.55rem .9rem;font-size:.75rem}
 }
 </style>
+<link rel="stylesheet" href="assets/brand-pages.css" />
+
 </head>
 <body>
 
@@ -752,23 +754,24 @@ html[data-theme="light"] .theme-toggle__icon--moon{opacity:1;transform:scale(1) 
 <!-- ============================= HEADER ============================= -->
 <header class="site-header" id="siteHeader">
   <div class="container nav-wrap">
-    <a class="brand" href="#home" aria-label="Tulsiram Chandravanshi — home">
-      <span class="brand__mark" aria-hidden="true">TC</span>
-      <span class="brand__text">Tulsiram&nbsp;<em>Chandravanshi</em></span>
+    <a class="brand" href="index.html#home" aria-label="Pramod Printers home">
+      <span class="brand__mark"><img src="assets/logo.png" alt="" /></span>
+      <span class="brand__text">प्रमोद&nbsp;<em>प्रिंटर्स</em><small style="display:block;font:600 11px Poppins,sans-serif;letter-spacing:.04em;color:#7b5555">जनरल शॉप</small></span>
     </a>
 
     <nav class="nav" aria-label="Primary">
-      <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu">
+      <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu" type="button">
         <span class="nav__bars" aria-hidden="true"><span></span><span></span><span></span></span>
         <span class="sr-only">Toggle menu</span>
       </button>
-
       <ul class="nav__menu" id="navMenu">
-        <li><a class="nav__link" href="#work">Work</a></li>
-        <li><a class="nav__link" href="#skills">Skills</a></li>
-        <li><a class="nav__link" href="#experience">Experience</a></li>
-        <li><a class="nav__link" href="#about">About</a></li>
-        <li><a class="nav__link" href="#contact">Contact</a></li>
+        <li><a class="nav__link" href="index.html#home">होम</a></li>
+        <li><a class="nav__link" href="index.html#services">सेवाएँ</a></li>
+        <li><a class="nav__link" href="index.html#cards">निमंत्रण कार्ड</a></li>
+        <li><a class="nav__link" href="index.html#about">हमारे बारे में</a></li>
+        <li><a class="nav__link" href="index.html#contact">संपर्क</a></li>
+        <li><a class="nav__link" href="privacy.html">Privacy</a></li>
+        <li><a class="nav__link" href="terms.html">Terms</a></li>
       </ul>
     </nav>
 
@@ -776,16 +779,13 @@ html[data-theme="light"] .theme-toggle__icon--moon{opacity:1;transform:scale(1) 
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" aria-pressed="false">
         <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/>
-          <path d="M12 2.6v2.4M12 19v2.4M2.6 12H5M19 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M18.7 5.3L17 7M7 17l-1.7 1.7"
-                fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M12 2.6v2.4M12 19v2.4M2.6 12H5M19 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M18.7 5.3L17 7M7 17l-1.7 1.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
         </svg>
         <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20.5 14.6A8.6 8.6 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1Z"
-                fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M20.5 14.6A8.6 8.6 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
         </svg>
       </button>
-
-      <a class="btn btn--primary btn--sm nav__cta" href="#contact">Hire me</a>
+      <a class="btn btn--primary btn--sm nav__cta" href="https://wa.me/919589445441" target="_blank" rel="noopener noreferrer">WhatsApp</a>
     </div>
   </div>
 </header>
@@ -1096,7 +1096,7 @@ html[data-theme="light"] .theme-toggle__icon--moon{opacity:1;transform:scale(1) 
           <textarea id="message" name="message" rows="4" required placeholder="A few lines about what you need…"></textarea>
         </div>
         <div class="field field--full field--submit">
-          <button class="btn btn--primary" type="submit">Send message</button>
+          <button class="btn btn--primary" type="submit">Send via WhatsApp</button>
           <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
         </div>
       </form>
@@ -1115,6 +1115,9 @@ html[data-theme="light"] .theme-toggle__icon--moon{opacity:1;transform:scale(1) 
       <li><a href="#experience">Experience</a></li>
       <li><a href="https://github.com" target="_blank" rel="noopener">GitHub</a></li>
       <li><a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li><a href="index.html">Pramod Printers</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="terms.html">Terms &amp; Conditions</a></li>
     </ul>
   </div>
 </footer>
@@ -1589,14 +1592,30 @@ sections.forEach(s => navObserver.observe(s));
 /* ============================================================
    CONTACT FORM
 ============================================================ */
-document.getElementById('contactForm').addEventListener('submit', e => {
+document.getElementById('contactForm')?.addEventListener('submit', e => {
   e.preventDefault();
+  const form = e.currentTarget;
   const note = document.getElementById('formNote');
-  const name = e.target.name.value.trim();
-  if(!name){ note.textContent = 'Please add your name.'; return; }
-  note.textContent = `Thanks ${name}! I'll get back to you within 24 hours.`;
-  e.target.reset();
-  setTimeout(() => { note.textContent = ''; }, 6000);
+  const name = form.elements.name.value.trim();
+  const email = form.elements.email.value.trim();
+  const message = form.elements.message.value.trim();
+
+  if (!form.reportValidity()) return;
+  if (!name || !email || !message) {
+    note.textContent = 'Please complete all fields.';
+    return;
+  }
+
+  const whatsappMessage = [
+    'Hello, I would like to discuss a project.',
+    '',
+    'Name: ' + name,
+    'Email: ' + email,
+    'Project details: ' + message
+  ].join('\\n');
+
+  note.textContent = 'Opening WhatsApp with your message. Please review and send it there.';
+  window.open('https://wa.me/919589445441?text=' + encodeURIComponent(whatsappMessage), '_blank', 'noopener,noreferrer');
 });
 
 /* ============================================================

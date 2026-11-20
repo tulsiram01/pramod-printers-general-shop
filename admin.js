@@ -72,7 +72,6 @@ function loginMsg(text, type = "error") {
 
 function driveImageUrl(value) {
   const rawUrl = String(value || "").trim();
-
   if (!rawUrl) return "";
 
   let parsedUrl;
@@ -81,44 +80,22 @@ function driveImageUrl(value) {
   } catch {
     return "";
   }
+
   if (!["http:", "https:"].includes(parsedUrl.protocol)) return "";
 
-  let fileId = "";
-  let match;
-
-  match = rawUrl.match(
-    /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i,
-  );
-
-  if (match) {
-    fileId = match[1];
-  }
-
-  if (!fileId) {
-    match = rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/i);
-
-    if (match) {
-      fileId = match[1];
+  // Only extract file IDs from the canonical Google Drive host.
+  if (parsedUrl.hostname === "drive.google.com") {
+    const parts = parsedUrl.pathname.split("/");
+    let fileId = "";
+    if (parts[1] === "file" && parts[2] === "d") {
+      fileId = parts[3] || "";
     }
+    if (!fileId) fileId = parsedUrl.searchParams.get("id") || "";
+    if (!/^[a-zA-Z0-9_-]{10,}$/.test(fileId)) return "";
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1200`;
   }
 
-  if (!fileId) {
-    match = rawUrl.match(/\/d\/([a-zA-Z0-9_-]+)/i);
-
-    if (match) {
-      fileId = match[1];
-    }
-  }
-
-  if (!fileId && /^[a-zA-Z0-9_-]{15,}$/.test(rawUrl)) {
-    fileId = rawUrl;
-  }
-
-  if (fileId) {
-    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
-  }
-
-  return rawUrl;
+  return parsedUrl.href;
 }
 
 /* ===============================
@@ -335,6 +312,16 @@ function preview() {
     return;
   }
 
+  if (!previewUrl) {
+    previewBox.classList.add("has-error");
+    const error = document.createElement("div");
+    error.className = "preview-error";
+    error.textContent = "कृपया सही HTTP/HTTPS image URL दर्ज करें।";
+    previewBox.appendChild(error);
+    previewImage.removeAttribute("src");
+    return;
+  }
+
   previewImage.onload = () => {
     previewBox.classList.add(
       "has-image",
@@ -417,10 +404,7 @@ function resetForm() {
   }
 
   if ($("category")) {
-    if (!$("category").value) {
-      $("category").value = "अन्य";
-    }
-
+    $("category").value = "अन्य";
     updateAutoFields();
   }
 }
@@ -480,6 +464,7 @@ async function init() {
       loginMsg("इस account को Admin access नहीं दिया गया है।");
       return;
     }
+    isAuthenticatedAdmin = true;
     showApp();
   }
 }
@@ -494,43 +479,68 @@ $("loginForm")?.addEventListener(
     event.preventDefault();
 
     if (!sb) {
-      loginMsg(
-        "Supabase अभी configure नहीं है।",
-      );
-
+      loginMsg("Supabase अभी configure नहीं है।");
       return;
     }
 
-    const email =
-      $("loginEmail")?.value.trim() ||
-      "";
-
-    const password =
-      $("loginPassword")?.value || "";
+    const email = $("loginEmail")?.value.trim() || "";
+    const password = $("loginPassword")?.value || "";
 
     if (!email || !password) {
-      loginMsg(
-        "Email और Password भरें।",
-      );
-
+      loginMsg("Email और Password भरें।");
       return;
     }
 
-    const { error } = await sb.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      loginMsg(error.message);
+    const now = Date.now();
+    const waitMs = LOGIN_REQUEST_COOLDOWN_MS - (now - lastLoginRequestAt);
+    if (waitMs > 0) {
+      loginMsg(`कृपया ${Math.ceil(waitMs / 1000)} सेकंड बाद दोबारा कोशिश करें।`, "error");
       return;
     }
+    lastLoginRequestAt = now;
 
-    const { data: isAdmin, error: roleError } = await sb.rpc("is_admin");
-    if (roleError || isAdmin !== true) {
-      await sb.auth.signOut();
-      loginMsg("Login सफल हुआ, लेकिन इस account को Admin access नहीं दिया गया है।");
-      return;
+    const loginButton = $("loginBtn");
+    const loginButtonText = $("loginBtnText");
+    const setLoginLoading = (loading) => {
+      if (!loginButton) return;
+      loginButton.disabled = loading;
+      loginButton.classList.toggle("is-loading", loading);
+      loginButton.setAttribute("aria-busy", String(loading));
+      if (loginButtonText) {
+        loginButtonText.textContent = loading ? "Login हो रहा है..." : "Login करें";
+      }
+    };
+
+    setLoginLoading(true);
+    loginMsg("");
+
+    try {
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        if (error.status === 429 || /rate.?limit|too many requests/i.test(error.message || "")) {
+          loginMsg("बहुत अधिक Login प्रयास हुए हैं। कुछ मिनट प्रतीक्षा करें और फिर कोशिश करें।", "error");
+        } else {
+          loginMsg("Email या Password सही नहीं है। कृपया दोबारा जाँचें।", "error");
+        }
+        return;
+      }
+
+      const { data: isAdmin, error: roleError } = await sb.rpc("is_admin");
+      if (roleError || isAdmin !== true) {
+        await sb.auth.signOut();
+        loginMsg("Login सफल हुआ, लेकिन इस account को Admin access नहीं दिया गया है।");
+        return;
+      }
+
+      isAuthenticatedAdmin = true;
+      showApp();
+    } catch (error) {
+      console.error("Admin login error:", error);
+      loginMsg("Login के दौरान समस्या आई। कृपया दोबारा कोशिश करें।");
+    } finally {
+      setLoginLoading(false);
     }
-
-    showApp();
   },
 );
 
@@ -541,8 +551,15 @@ $("loginForm")?.addEventListener(
 const SESSION_TIMEOUT = 10 * 60 * 1000; // 10 minutes
 
 let sessionTimer = null;
+let isAuthenticatedAdmin = false;
+
+// Client-side duplicate-submit guard only; Supabase Auth enforces the real
+// IP-based rate limit on the server.
+let lastLoginRequestAt = 0;
+const LOGIN_REQUEST_COOLDOWN_MS = 2500;
 
 async function logout() {
+  isAuthenticatedAdmin = false;
   try {
     if (sb) {
       await sb.auth.signOut();
@@ -557,6 +574,7 @@ async function logout() {
 
 function resetSessionTimer() {
   clearTimeout(sessionTimer);
+  if (!isAuthenticatedAdmin) return;
 
   sessionTimer = setTimeout(() => {
     logout();
@@ -692,11 +710,6 @@ $("categoryFilter")?.addEventListener(
   renderDesigns,
 );
 
-$("filterCategory")?.addEventListener(
-  "change",
-  renderDesigns,
-);
-
 /* ===============================
    Save / Update Design
 ================================ */
@@ -745,9 +758,9 @@ $("designForm")?.addEventListener(
     const id =
       $("designId")?.value || "";
 
-    if (!originalImageUrl) {
+    if (!originalImageUrl || !image_url) {
       showMsg(
-        "Google Drive Image URL भरना जरूरी है।",
+        "कृपया सही HTTP/HTTPS image URL दर्ज करें।",
         "error",
       );
 
@@ -903,9 +916,7 @@ function renderDesigns() {
       .toLowerCase()
       .trim() || "";
 
-  const categoryFilter =
-    $("categoryFilter") ||
-    $("filterCategory");
+  const categoryFilter = $("categoryFilter");
 
   const selectedCategory =
     categoryFilter?.value.trim() ||
@@ -1176,13 +1187,7 @@ function renderGalleryDesigns() {
   const gallery =
     getGalleryContainer();
 
-  if (!gallery) {
-    console.warn(
-      "Gallery container नहीं मिला",
-    );
-
-    return;
-  }
+  if (!gallery) return;
 
   const selectedCategory =
     String(

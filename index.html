@@ -2653,6 +2653,24 @@
           if (error) throw error;
           const gallery = document.getElementById("invitationGallery");
           if (!gallery) return;
+
+          // Event delegation keeps the lightbox working after async gallery replacement.
+          if (!gallery.dataset.lightboxBound) {
+            gallery.dataset.lightboxBound = "true";
+            gallery.addEventListener("click", function (event) {
+              const image = event.target.closest(".gallery-preview-img");
+              if (!image) return;
+              const box = document.getElementById("galleryLightbox");
+              const boxImage = document.getElementById("galleryLightboxImage");
+              if (!box || !boxImage) return;
+              boxImage.src = image.currentSrc || image.src;
+              boxImage.alt = image.alt || "Image Preview";
+              box.classList.add("active");
+              box.setAttribute("aria-hidden", "false");
+              document.body.style.overflow = "hidden";
+            });
+          }
+
           if (!data || !data.length) {
             gallery.innerHTML = '<p class="empty-gallery">अभी कोई design प्रकाशित नहीं है।</p>';
             return;
