@@ -6,7 +6,6 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 HTML_FILES = ["index.html", "admin.html", "developer.html", "privacy.html", "terms.html"]
-VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
 
 class AuditParser(HTMLParser):
     def __init__(self):
@@ -75,7 +74,7 @@ for filename in ("admin.js", "supabase-config.js"):
 
 admin_ids = set(parsers["admin.html"].ids)
 admin_js = (ROOT / "admin.js").read_text(encoding="utf-8")
-referenced_ids = set(re.findall(r'\\$\\(["\\']([^"\\']+)["\\']\\)', admin_js))
+referenced_ids = set(re.findall(r"\$\(['\"]([^'\"]+)['\"]\)", admin_js))
 missing = sorted(referenced_ids - admin_ids)
 if missing:
     fail(f"admin.js references missing admin.html IDs: {missing}")
